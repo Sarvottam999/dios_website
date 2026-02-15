@@ -3,7 +3,9 @@
 var BookingComponent = (function() {
     'use strict';
 
-    var API_URL = 'http://127.0.0.1:8000/api'; // Replace with your actual API URL
+    // var API_URL = 'http://127.0.0.1:8000/api'; 
+    var API_URL = 'https://api.birlallf.org/api'; 
+
     var timeSlots = [];
 
     function init(containerId) {
