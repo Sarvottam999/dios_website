@@ -518,7 +518,9 @@
                                 <input type="text" id="datepicker" class="res_input" placeholder="Date" required>
                             </div>
                             <div class="d-flex flex-sm-row flex-column align-items-center justify-content-start">
-								<input type="text" class="res_input timepicker" placeholder="Select Time" required>
+								<select class="res_select" name="time_slot" id="timeslot" required>
+									<option value="" disabled selected>Select Time</option>
+								</select>
 								<select class="res_select" name="number_of_guests" required>
 									<option value="" disabled selected>Number of Guests</option>
 									<option value="1">1 person</option>

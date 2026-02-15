@@ -3,7 +3,7 @@
 var BookingComponent = (function() {
     'use strict';
 
-    var API_URL = 'https://api.birlallf.org/api'; // Replace with your actual API URL
+    var API_URL = 'http://127.0.0.1:8000/api'; // Replace with your actual API URL
     var timeSlots = [];
 
     function init(containerId) {
@@ -11,41 +11,80 @@ var BookingComponent = (function() {
         setupEventListeners(containerId);
     }
 
-    function loadTimeSlots() {
-        // Fetch available time slots from API
-        fetch(API_URL + '/timeslots/')
-            .then(response => response.json())
-            .then(data => {
-                timeSlots = data;
-                // populateTimeSlots();
-            })
-            .catch(error => console.error('Error loading time slots:', error));
-    }
 
-    function populateTimeSlots() {
-        var timepicker = $('.timepicker');
-        timepicker.empty();
+
+function loadTimeSlots(selectedDate) {
+    if (!selectedDate) return;
+    
+    // Format date as YYYY-MM-DD
+    var dateParts = selectedDate.split('/');
+    var formattedDate = dateParts[2] + '-' + dateParts[0].padStart(2, '0') + '-' + dateParts[1].padStart(2, '0');
+    
+    fetch(API_URL + '/slots/?date=' + formattedDate, {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Token 606d2e0f9af4b0feb0d9d055bdd80ae916efe6a6'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        timeSlots = data.results;
+        populateTimeSlots();
+    })
+    .catch(error => console.error('Error loading time slots:', error));
+}
+
+function populateTimeSlots() {
+    var timeslotSelect = $('#timeslot');
+    timeslotSelect.empty();
+    timeslotSelect.append('<option value="" disabled selected>Select Time</option>');
+    
+    timeSlots.forEach(function(slot) {
+        if (slot.is_active && slot.remaining_capacity > 0) {
+            var option = '<option value="' + slot.id + '">' + 
+                        slot.start_time.substring(0,5) + ' - ' + slot.end_time.substring(0,5) + 
+                        ' (' + slot.remaining_capacity + ' spots)</option>';
+            timeslotSelect.append(option);
+        }
+    });
+}
+    // function loadTimeSlots() {
+    //     // Fetch available time slots from API
+    //     fetch(API_URL + '/timeslots/')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             timeSlots = data;
+    //             // populateTimeSlots();
+    //         })
+    //         .catch(error => console.error('Error loading time slots:', error));
+    // }
+
+    // function populateTimeSlots() {
+    //     var timepicker = $('.timepicker');
+    //     timepicker.empty();
         
-        // Add default option
-        timepicker.append('<option value="" disabled selected>Select Time</option>');
+    //     // Add default option
+    //     timepicker.append('<option value="" disabled selected>Select Time</option>');
         
-        timeSlots.forEach(function(slot) {
-            if (slot.is_active && slot.remaining_capacity > 0) {
-                var option = '<option value="' + slot.id + '">' + 
-                            slot.start_time + ' - ' + slot.end_time + 
-                            ' (' + slot.remaining_capacity + ' spots left)</option>';
-                timepicker.append(option);
-            }
-        });
-    }
+    //     timeSlots.forEach(function(slot) {
+    //         if (slot.is_active && slot.remaining_capacity > 0) {
+    //             var option = '<option value="' + slot.id + '">' + 
+    //                         slot.start_time + ' - ' + slot.end_time + 
+    //                         ' (' + slot.remaining_capacity + ' spots left)</option>';
+    //             timepicker.append(option);
+    //         }
+    //     });
+    // }
     function setupEventListeners(containerId) {
         var form = $('#' + containerId);
         
-        console.log('Form found:', form.length); // Should print 1
+        // Load slots when date changes
+        $('#datepicker').on('change', function() {
+            loadTimeSlots($(this).val());
+        });
         
         form.on('submit', function(e) {
             e.preventDefault();
-            console.log('Form submitted!'); // Check if this prints
             submitBooking(this);
         });
     }
@@ -68,7 +107,7 @@ var BookingComponent = (function() {
             phone: $(form).find('[name="phone"]').val(),
             email: $(form).find('[name="email"]').val(),
             date: formattedDate, // Changed
-            time_slot: 1, // Hardcoded for now - we'll fix this next
+            time_slot: parseInt($('#timeslot').val()), 
             number_of_guests: parseInt(guestsValue),
             occasion: $(form).find('[name="occasion"]').val() || '',
             special_request: $(form).find('[name="special_request"]').val() || ''
@@ -90,7 +129,7 @@ var BookingComponent = (function() {
             return response.json();
         })
         .then(data => {
-            showSuccess('Booking created successfully! Booking ID: ' + data.id);
+            showSuccess('Booking created successfully!');
             $(form)[0].reset();
             initDatePicker();
         })
@@ -125,3 +164,6 @@ var BookingComponent = (function() {
         init: init
     };
 })();
+
+
+
