@@ -131,73 +131,35 @@ $(document).ready(function()
 
 	/* 
 
-	6. Init Google Map
+6. Init OpenStreetMap
 
-	*/
+*/
 
-	function initGoogleMap()
-	{
-		var myLatlng = new google.maps.LatLng(29.3914682, 76.958392);
-		var mapOptions = 
-		{
-			center: myLatlng,
-			zoom: 18,  // Closer zoom since we have exact location
-			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			draggable: true,
-			scrollwheel: false,
-			zoomControl: true,
-			zoomControlOptions:
-			{
-				position: google.maps.ControlPosition.RIGHT_CENTER
-			},
-			mapTypeControl: false,
-			scaleControl: false,
-			streetViewControl: false,
-			rotateControl: false,
-			fullscreenControl: true,
-			styles:
-			[
-			  {
-				"featureType": "road.highway",
-				"elementType": "geometry.fill",
-				"stylers": [
-				  {
-					"color": "#ffeba1"
-				  }
-				]
-			  }
-			]
-		}
-	
-		// Initialize a map with options
-		map = new google.maps.Map(document.getElementById('map'), mapOptions);
-	
-		// Add marker for DIOS location
-		var marker = new google.maps.Marker({
-			position: myLatlng,
-			map: map,
-			title: 'DIOS Panipat - The Neighbourhood Bistro',
-			animation: google.maps.Animation.DROP
-		});
-	
-		// Add info window
-		var infowindow = new google.maps.InfoWindow({
-			content: '<div style="padding:10px;"><h4 style="margin:0 0 5px 0;color:#232323;">DIOS Panipat</h4><p style="margin:0;color:#636363;">2nd & 3rd Floor, Lal Tanki Market<br>Model Town, Panipat<br><strong>+91 74970 01110</strong></p></div>'
-		});
-	
-		marker.addListener('click', function() {
-			infowindow.open(map, marker);
-		});
-	
-		// Re-center map after window resize
-		google.maps.event.addDomListener(window, 'resize', function()
-		{
-			setTimeout(function()
-			{
-				google.maps.event.trigger(map, "resize");
-				map.setCenter(myLatlng);
-			}, 1400);
-		});
-	}
+function initGoogleMap()
+{
+	// Initialize the map
+	var map = L.map('map').setView([29.3914682, 76.958392], 18);
 
+	// Add OpenStreetMap tiles
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		maxZoom: 19
+	}).addTo(map);
+
+	// Add marker for DIOS location
+	var marker = L.marker([29.3914682, 76.958392]).addTo(map);
+
+	// Add popup to marker
+	marker.bindPopup('<div style="padding:10px;"><h4 style="margin:0 0 5px 0;color:#232323;">DIOS Panipat</h4><p style="margin:0;color:#636363;font-size:14px;">2nd & 3rd Floor, Lal Tanki Market<br>Model Town, Panipat<br><strong>+91 74970 01110</strong></p></div>');
+
+	// Open popup by default
+	marker.openPopup();
+
+	// Handle map resize
+	window.addEventListener('resize', function() {
+		setTimeout(function() {
+			map.invalidateSize();
+		}, 400);
+	});
+}
 });
