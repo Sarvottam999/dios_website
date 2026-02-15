@@ -25,7 +25,6 @@ function loadTimeSlots(selectedDate) {
     fetch(API_URL + '/slots/?date=' + formattedDate, {
         headers: {
             'Accept': 'application/json',
-            'Authorization': 'Token 606d2e0f9af4b0feb0d9d055bdd80ae916efe6a6'
         }
     })
     .then(response => response.json())
