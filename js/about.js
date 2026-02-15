@@ -46,7 +46,7 @@ $(document).ready(function()
 	});
 
 	initDatePicker();
-	initTimePicker();
+	// initTimePicker();
 	BookingComponent.init('res_form');
 initMenu();
 	initTestSlider();
@@ -115,19 +115,19 @@ initMenu();
 	*/
 
 	// function initTimePicker()
-	// {
-	// 	$('.timepicker').timepicker(
-	// 	{
-	// 	    interval: 60,
-	// 	    minTime: '10',
-	// 	    maxTime: '6:00pm',
-	// 	    defaultTime: '11',
-	// 	    startTime: '10:00',
-	// 	    dynamic:  true,
-	// 	    dropdown: true,
-	// 	    scrollbar: true
-	// 	});
-	// }
+	{
+		$('.timepicker').timepicker(
+		{
+		    interval: 60,
+		    minTime: '10',
+		    maxTime: '6:00pm',
+		    defaultTime: '11',
+		    startTime: '10:00',
+		    dynamic:  true,
+		    dropdown: true,
+		    scrollbar: true
+		});
+	}
 
 	/* 
 

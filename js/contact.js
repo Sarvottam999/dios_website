@@ -47,7 +47,7 @@ $(document).ready(function()
 	});
 
 	initDatePicker();
-	initTimePicker();
+	// initTimePicker();
 	initMenu();
 	initGoogleMap();
 
